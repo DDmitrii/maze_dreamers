@@ -23,20 +23,29 @@ public class GuardPatrol : MonoBehaviour
     }
 
     private void Patrol()
+{
+    if (waypoints == null || waypoints.Length == 0)
+        return;
+
+    Transform target = waypoints[currentIndex];
+    Vector3 direction = (target.position - transform.position).normalized;
+
+    // Движение
+    transform.position += direction * moveSpeed * Time.deltaTime;
+
+    // Поворот: считаем, что "вперёд" у спрайта — это вверх (Y)
+    if (direction.sqrMagnitude > 0.0001f)
     {
-        if (waypoints == null || waypoints.Length == 0)
-            return;
-
-        Transform target = waypoints[currentIndex];
-        Vector3 direction = (target.position - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
-
-        if (Vector3.Distance(transform.position, target.position) < reachDistance)
-        {
-            currentIndex = (currentIndex + 1) % waypoints.Length;
-        }
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // Если вперёд = up, добавляем -90 градусов; если right, можно без сдвига
+        transform.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
     }
 
+    if (Vector3.Distance(transform.position, target.position) < reachDistance)
+    {
+        currentIndex = (currentIndex + 1) % waypoints.Length;
+    }
+}
     private void DetectPlayer()
 {
     if (player == null) return;
