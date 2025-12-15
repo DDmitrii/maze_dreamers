@@ -6,33 +6,35 @@ public class DoorTimedPuzzle : MonoBehaviour
     private bool lever2Active = false;
     private bool isOpen = false;
 
-    public void ActivateLever1()
+    public void SetLever1(bool active)
     {
         if (isOpen) return;
-        lever1Active = true;
-        Debug.Log("Рычаг 1 активирован! Быстрее ко второму!");
+        lever1Active = active;
+        
+        if (active)
+            Debug.Log("Рычаг 1 активен!");
+        else
+            Debug.Log("Рычаг 1 погас!");
+            
         CheckBothLevers();
     }
 
-    public void DeactivateLever1()
+    public void SetLever2(bool active)
     {
         if (isOpen) return;
-        lever1Active = false;
-        lever2Active = false; // Сброс всей головоломки
-        Debug.Log("Рычаг 1 погас! Попробуй снова.");
-    }
-
-    public void ActivateLever2()
-    {
-        if (isOpen) return;
-        lever2Active = true;
-        Debug.Log("Рычаг 2 активирован!");
+        lever2Active = active;
+        
+        if (active)
+            Debug.Log("Рычаг 2 активен!");
+        else
+            Debug.Log("Рычаг 2 погас!");
+            
         CheckBothLevers();
     }
 
     private void CheckBothLevers()
     {
-        if (lever1Active && lever2Active)
+        if (lever1Active && lever2Active && !isOpen)
         {
             Open();
         }
@@ -42,6 +44,6 @@ public class DoorTimedPuzzle : MonoBehaviour
     {
         isOpen = true;
         gameObject.SetActive(false);
-        Debug.Log("Дверь открыта! Оба рычага активны одновременно!");
+        Debug.Log("ДВЕРЬ ОТКРЫТА! Оба рычага горели одновременно!");
     }
 }

@@ -3,7 +3,8 @@ using UnityEngine;
 public class TimedLever : MonoBehaviour
 {
     public DoorTimedPuzzle door;
-    public float activeTime = 4f; // Сколько секунд горит рычаг
+    public float activeTime = 4f;
+    public bool isLever1 = true; // true для первого рычага, false для второго
     
     private bool isActivated = false;
     private float timer = 0f;
@@ -18,7 +19,7 @@ public class TimedLever : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !isActivated)
+        if (other.CompareTag("Player"))
         {
             Activate();
         }
@@ -26,16 +27,20 @@ public class TimedLever : MonoBehaviour
 
     private void Activate()
     {
+        // Перезапускаем таймер даже если уже активирован
         isActivated = true;
         timer = activeTime;
         spriteRenderer.color = Color.green;
         
         if (door != null)
         {
-            door.ActivateLever1();
+            if (isLever1)
+                door.SetLever1(true);
+            else
+                door.SetLever2(true);
         }
         
-        Debug.Log($"Таймер рычага запущен: {activeTime} сек");
+        Debug.Log($"Рычаг {(isLever1 ? "1" : "2")} активирован на {activeTime} сек");
     }
 
     private void Update()
@@ -64,9 +69,12 @@ public class TimedLever : MonoBehaviour
         
         if (door != null)
         {
-            door.DeactivateLever1();
+            if (isLever1)
+                door.SetLever1(false);
+            else
+                door.SetLever2(false);
         }
         
-        Debug.Log("Рычаг 1 погас! Можно активировать снова.");
+        Debug.Log($"Рычаг {(isLever1 ? "1" : "2")} погас!");
     }
 }
